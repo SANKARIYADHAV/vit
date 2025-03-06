@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz for Deaf and Mute People</title>
+    <style>
+        :root {
+            --main-color: #8e44ad;
+            --correct-color: #27ae60;
+            --incorrect-color: #c0392b;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: var(--main-color);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h2 {
+            color: var(--main-color);
+            text-align: center;
+        }
+        .quiz-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid var(--main-color);
+            border-radius: 8px;
+        }
+        .question {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .options {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .option {
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+        }
+        .option img {
+            max-width: 100%;
+            border: 2px solid var(--main-color);
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+        .option img.correct {
+            border-color: var(--correct-color);
+        }
+        .option img.incorrect {
+            border-color: var(--incorrect-color);
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        .submit-button {
+            background-color: var(--main-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>English Words Quiz</h2>
+    <div class="quiz-section">
+        <!-- Question 1 -->
+        <div class="question">1. What is the opposite of "happy"?</div>
+        <div class="options">
+            <div class="option" onclick="checkAnswer(0, 'correct')">
+                <img src="sad.png" alt="Sad">
+                <p>Sad</p>
+            </div>
+            <div class="option" onclick="checkAnswer(0, 'incorrect')">
+                <img src="happy.png" alt="Angry">
+                <p>Angry</p>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question">2. Which word means "large in size"?</div>
+        <div class="options">
+            <div class="option" onclick="checkAnswer(1, 'correct')">
+                <img src="big.png" alt="Big">
+                <p>Big</p>
+            </div>
+            <div class="option" onclick="checkAnswer(1, 'incorrect')">
+                <img src="small.png" alt="Small">
+                <p>Small</p>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question">3. What is the plural form of "cat"?</div>
+        <div class="options">
+            <div class="option" onclick="checkAnswer(2, 'incorrect')">
+                <img src="cat.png" alt="Cat">
+                <p>Cat</p>
+            </div>
+            <div class="option" onclick="checkAnswer(2, 'correct')">
+                <img src="cats.png" alt="Cats">
+                <p>Cats</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Math Numbers Quiz</h2>
+    <div class="quiz-section">
+        <!-- Question 1 -->
+        <div class="question">1. What is 5 + 3?</div>
+        <div class="options">
+            <div class="option" onclick="checkAnswer(3, 'correct')">
+                <img src="eight.png" alt="8">
+                <p>8</p>
+            </div>
+            <div class="option" onclick="checkAnswer(3, 'incorrect')">
+                <img src="seven.png" alt="7">
+                <p>7</p>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="question">2. What is 10 - 4?</div>
+        <div class="options">
+            <div class="option" onclick="checkAnswer(4, 'correct')">
+                <img src="six.png" alt="6">
+                <p>6</p>
+            </div>
+            <div class="option" onclick="checkAnswer(4, 'incorrect')">
+                <img src="five.png" alt="5">
+                <p>5</p>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="question">3. What is 3 × 3?</div>
+        <div class="options">
+            <div class="option" onclick="checkAnswer(5, 'incorrect')">
+                <img src="four.png" alt="4">
+                <p>4</p>
+            </div>
+            <div class="option" onclick="checkAnswer(5, 'correct')">
+                <img src="nine.png" alt="9">
+                <p>9</p>
+            </div>
+        </div>
+    </div>
+
+    <button class="submit-button" onclick="submitQuiz()">Submit Quiz</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+    let score = 0;
+    const correctAnswers = [false, false, false, false, false, false]; // 6 questions
+
+    function checkAnswer(questionIndex, answer) {
+        const options = document.querySelectorAll('.quiz-section .options')[questionIndex];
+        const imgElements = options.querySelectorAll('img');
+
+        if (answer === 'correct') {
+            imgElements.forEach((img) => img.classList.remove('correct', 'incorrect'));
+            imgElements[0].classList.add('correct');
+            if (!correctAnswers[questionIndex]) {
+                score++;
+                correctAnswers[questionIndex] = true;
+            }
+        } else {
+            imgElements.forEach((img) => img.classList.remove('correct', 'incorrect'));
+            imgElements[1].classList.add('incorrect');
+        }
+    }
+
+    function submitQuiz() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `Your final score is: ${score} out of 6`;
+    }
+</script>
+
+</body>
+</html>

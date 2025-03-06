@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .container {
+            margin-top: 50px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        h1 {
+            color: #8e44ad;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #732d91;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #8e44ad;
+        }
+
+        #video-container {
+            margin-top: 30px;
+        }
+
+        video {
+            display: none;
+            border: 5px solid #8e44ad;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Speech to ISL Sign</h1>
+        <button id="start-recognition">Start Speaking</button>
+        <p id="status">Press the button and speak...</p>
+        <div id="video-container">
+            <video id="display-video" width="600" controls>
+                <source id="video-source" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        // List of phrases and their corresponding video URLs
+        const videoMap = {
+            "hello": "C:/Users/User/Desktop/front/desgin/images/hello.mp4",
+            "no": "C:/Users/User/Desktop/front/desgin/images/no.mp4",
+            "I love you":"C:/Users/User/Desktop/front/desgin/images/please.mp4",
+            "Thankyou":"C:/Users/User/Desktop/front/desgin/images/thankyou.mp4"
+
+        };
+
+        // Select elements
+        const startRecognitionButton = document.getElementById('start-recognition');
+        const statusText = document.getElementById('status');
+        const videoContainer = document.getElementById('video-container');
+        const videoElement = document.getElementById('display-video');
+        const videoSource = document.getElementById('video-source');
+
+        // Web Speech API
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        // Start speech recognition on button click
+        startRecognitionButton.addEventListener('click', () => {
+            recognition.start();
+            statusText.textContent = "Listening to the speech...";
+        });
+
+        // Process the speech result
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript.toLowerCase();
+            statusText.textContent = `You said: "${transcript}"`;
+
+            // Check if transcript matches a video
+            if (videoMap[transcript]) {
+                videoSource.src = videoMap[transcript];
+                videoElement.load();
+                videoElement.style.display = 'block';
+                videoElement.play();
+            } else {
+                statusText.textContent = `No video found for "${transcript}"`;
+                videoElement.style.display = 'none';
+            }
+        };
+
+        // Handle speech recognition errors
+        recognition.onerror = (event) => {
+            statusText.textContent = `Error: ${event.error}`;
+        };
+    </script>
+</body>
+</html>

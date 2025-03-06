@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <title>Sign Practice</title>
+</head>
+<body>
+
+    <a href="#" onclick="fetchRecognizedText()">
+        <i class="fas fa-handshake"></i> <span>Sign Practice</span>
+    </a>
+
+    <h3>Recognized Sign/Text:</h3>
+    <p id="recognized_text">Waiting for input...</p>
+
+    <h3>Video Output:</h3>
+    <video id="sign_video" width="400" controls>
+        <source id="video_source" src="" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        function fetchRecognizedText() {
+            fetch('/get_texts')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('recognized_text').innerText = data.user_sign || "No sign detected";
+
+                // Check if a video is available
+                fetch('/recognize_speech', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "user_type": "user_speech" })
+                })
+                .then(response => response.json())
+                .then(videoData => {
+                    if (videoData.video_url) {
+                        document.getElementById('video_source').src = videoData.video_url;
+                        document.getElementById('sign_video').load();
+                    } else {
+                        document.getElementById('video_source').src = "";
+                    }
+                })
+                .catch(error => console.error('Error fetching video:', error));
+            })
+            .catch(error => console.error('Error fetching text:', error));
+        }
+    </script>
+
+</body>
+</html>

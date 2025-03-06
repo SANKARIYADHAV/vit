@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Recognition</title>
+    <style>
+        body {
+            background-color: #f5eef8;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: #4a4a4a;
+        }
+        h1 {
+            color: #6a1b9a;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            width: 45%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        button {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #4a148c;
+        }
+        video, img {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 100%;
+        }
+        .recognized-text {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sign Language Recognition System</h1>
+
+    <div class="container">
+        <div class="box">
+            <h2>User Video Feed</h2>
+            <img src="{{ url_for('video_feed_user') }}">
+            <p class="recognized-text" id="userSignText">Recognized Sign: </p>
+        </div>
+
+        <div class="box">
+            <h2>Receiver Video Feed</h2>
+            <video id="videoPlayer" controls>
+                <source id="videoSource" src="" type="video/mp4">
+            </video>
+            <p class="recognized-text" id="receiverSignText">Recognized Sign: </p>
+            <button onclick="recognizeSpeech()">🎤 Speak</button>
+            <p class="recognized-text" id="recognizedText">Recognized Speech: </p>
+        </div>
+    </div>
+
+    <script>
+        function recognizeSpeech() {
+            fetch('/recognize_speech', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_type: "user_speech" })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("recognizedText").innerText = "Recognized Speech: " + data.recognized_text;
+
+                if (data.video_url) {
+                    let videoPlayer = document.getElementById("videoPlayer");
+                    let videoSource = document.getElementById("videoSource");
+
+                    videoSource.src = data.video_url;
+                    videoPlayer.load();
+                    videoPlayer.play();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function fetchRecognizedSigns() {
+            fetch('/get_texts')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("userSignText").innerText = "Recognized Sign: " + data.user_sign;
+                document.getElementById("receiverSignText").innerText = "Recognized Sign: " + data.receiver_sign;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        // Refresh hand sign recognition every 2 seconds
+        setInterval(fetchRecognizedSigns, 2000);
+    </script>
+</body>
+</html>
