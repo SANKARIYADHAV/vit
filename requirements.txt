@@ -72,7 +72,7 @@ seaborn>=0.11.0
 # Deploy ----------------------------------------------------------------------
 setuptools>=70.0.0 # Snyk vulnerability fix
 # tritonclient[all]~=2.24.0
-gunicorn
+gunicorn app:app
 
 # Extras ----------------------------------------------------------------------
 # ipython  # interactive notebook
